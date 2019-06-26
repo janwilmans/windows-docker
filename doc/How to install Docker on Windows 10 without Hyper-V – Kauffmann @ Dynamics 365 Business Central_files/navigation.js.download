@@ -1,0 +1,40 @@
+/**
+ * Mobile Navigation
+ *
+ */
+
+;(function( $, window, document, undefined ){
+	"use strict";
+	
+	$( document ).ready( function ($) {
+		
+		var $toggleButton = $('#menu-toggle');
+		var $menuMobile = $('#mobile-navigation');
+		
+		$('#menu-toggle').click( function( e ) {
+			$menuMobile.toggleClass('toggled-on');
+			$toggleButton.toggleClass('toggled-on');
+			$( 'body,html' ).scrollTop( 0 );
+			return false;
+		} );
+
+		var defaultWindowWidth = $(window).width();
+		$(window).resize(function() {
+			if ( defaultWindowWidth != $(window).width() ) {
+				$menuMobile.removeClass('toggled-on');
+				$toggleButton.removeClass('toggled-on');
+			}
+		});
+
+		var $mobile_nav = $('#mobile-navigation');
+
+		var $clone_main_nav = $('#site-navigation > div').children().clone();
+		$clone_main_nav = $clone_main_nav.removeAttr('id').removeClass('nav-menu').addClass('mobile-nav-menu');
+		
+		var $clone_social_nav = $('#social-navigation').children().clone();
+		$clone_social_nav = $clone_social_nav.removeAttr('id').removeClass('social-links').addClass('mobile-social-menu');
+		
+		$mobile_nav.append( $clone_main_nav, $clone_social_nav );
+		
+	} );
+})( jQuery, window , document );

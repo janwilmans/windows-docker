@@ -1,0 +1,1 @@
+regedit /s ignore_certificates.reg
