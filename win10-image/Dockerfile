@@ -13,6 +13,14 @@ FROM ${FROM_IMAGE}
 # Reset the shell.
 SHELL ["cmd", "/S", "/C"]
 
+RUN powershell -command Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+RUN choco install git -y
+RUN choco install python3 -y
+RUN choco install cppcheck -y
+RUN choco install nodejs --version 8.11.3
+
+# choco install nodejs-lts # maybe vs_buildtools can work with the lateste LTS ?
+
 # Set up environment to collect install errors.
 COPY Install.cmd C:\TEMP\
 ADD https://aka.ms/vscollect.exe C:\TEMP\collect.exe
@@ -38,9 +46,6 @@ RUN C:\TEMP\Init.bat
 
 # add profile to change powershell prompt
 ADD Microsoft.PowerShell_profile.ps1 C:\Users\ContainerAdministrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-
-RUN powershell -command Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-RUN choco install git -y
 
 # Use developer command prompt and start PowerShell if no other command specified.
 ENTRYPOINT C:\BuildTools\Common7\Tools\VsDevCmd.bat -arch=amd64 && prompt [DOCKER] $P$G &&
