@@ -1,5 +1,7 @@
 :: run this as administrator
 
+:: make script directory the current directory
+pushd %~dp0
 call update_packages.bat
 
 mkdir c:\temp 2>NUL

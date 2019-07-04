@@ -1,4 +1,5 @@
 :: run this as administrator
+pushd %~dp0\
 regedit /s developer_settings.reg
 powershell -command Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 @echo *****
