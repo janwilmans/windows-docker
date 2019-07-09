@@ -14,32 +14,25 @@ FROM ${FROM_IMAGE}
 SHELL ["cmd", "/S", "/C"]
 
 RUN powershell -command Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-RUN choco install git -y
-RUN choco install python3 -y
-RUN choco install cppcheck -y
-RUN choco install nodejs --version 8.11.3
-
-# choco install nodejs-lts # maybe vs_buildtools can work with the lateste LTS ?
+RUN choco install -y git
+RUN choco install -y python3
+RUN choco install -y cppcheck -y
 
 # Set up environment to collect install errors.
-COPY Install.cmd C:\TEMP\
-ADD https://aka.ms/vscollect.exe C:\TEMP\collect.exe
-
-## Install Node.js LTS
-ADD https://nodejs.org/dist/v8.11.3/node-v8.11.3-x64.msi C:\TEMP\node-install.msi
-RUN start /wait msiexec.exe /i C:\TEMP\node-install.msi /l*vx "%TEMP%\MSI-node-install.log" /qn ADDLOCAL=ALL
-
-# Download channel for fixed install.
-ARG CHANNEL_URL=https://aka.ms/vs/16/release/channel
-ADD ${CHANNEL_URL} C:\TEMP\VisualStudio.chman
-
-# Download and install Build Tools for Visual Studio 2019 for native desktop workload.
-ADD https://aka.ms/vs/16/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
-RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
-    --channelUri C:\TEMP\VisualStudio.chman `
-    --installChannelUri C:\TEMP\VisualStudio.chman `
-    --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended`
-    --installPath C:\BuildTools
+COPY vs_professional_2019.exe C:\TEMP\
+RUN C:\TEMP\vs_professional_2019.exe --layout c:\temp\vs_cache --add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools `
+    --add Microsoft.Net.Component.3.5.DeveloperTools `
+    --add Microsoft.Net.ComponentGroup.4.6.2.DeveloperTools `
+    --add Microsoft.Net.ComponentGroup.TargetingPacks.Common `
+    --add Microsoft.VisualStudio.Component.TestTools.BuildTools `
+    --add Microsoft.VisualStudio.Workload.VCTools `
+    --add Microsoft.VisualStudio.Component.VC.140 `
+    --add Microsoft.VisualStudio.Component.VC.ATL `
+    --add Microsoft.VisualStudio.Component.VC.CLI.Support `
+    --add Microsoft.VisualStudio.Component.Windows10SDK.17763 `
+    --add Microsoft.VisualStudio.Component.WinXP `
+    --add Microsoft.VisualStudio.Component.JavaScript.TypeScript `
+    --includeRecommended
 
 ADD Init.bat C:\TEMP\Init.bat
 RUN C:\TEMP\Init.bat
