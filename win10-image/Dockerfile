@@ -22,4 +22,13 @@ COPY vs_professional_2019.exe C:\TEMP\
 COPY vs_professional_2019.bat C:\TEMP\
 RUN C:\TEMP\vs_professional_2019.bat
 
+ADD Init.bat C:\TEMP\Init.bat
+RUN C:\TEMP\Init.bat
+
+# add profile to change powershell prompt
+ADD Microsoft.PowerShell_profile.ps1 C:\Users\ContainerAdministrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+
+# Use developer command prompt and start PowerShell if no other command specified.
+ENTRYPOINT C:\BuildTools\Common7\Tools\VsDevCmd.bat -arch=amd64 && prompt [DOCKER] $P$G &&
+CMD ["powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
 

@@ -1,0 +1,29 @@
+# Limits how many jobs globally can be run concurrently. 
+# The most upper limit of jobs using all defined runners. 0 does not mean unlimited
+concurrent = 2
+check_interval = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "winbuilderphy2"
+
+  # Limit number of concurrent requests for new jobs from GitLab (default 1)
+  request_concurrency = 2
+  url = ""
+  token = ""
+  executor = "docker-windows"
+  shell = "powershell"
+  builds_dir = "C:/B"
+  output_limit = 40960
+ 
+ [runners.docker]
+    tls_verify = false
+    privileged = false
+    disable_cache = false
+    pull_policy = "if-not-present"
+
+# if pull_policy = "never" you will have to manually do a:
+# docker pull gitlab/gitlab-runner-helper:x86_64-ac2a293c-servercore1809
+# to retrieve the inital image
